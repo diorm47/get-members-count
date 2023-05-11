@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вывод число подписчиков у групп.</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page_wrapper">
+      <div class="page_title">
+        <h1>Информация о группах</h1>
+      </div>
+      <div class="page_content">
+        <table id="groupTable">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>Сайт</th>
+              <th>ВКонтакте</th>
+              <th>Подписчики VK</th>
+              <th>Одноклассники</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        var count_number = 1;
+        function getGroupInfo(groupId) {
+          var apiUrl = "https://api.vk.com/method/groups.getById";
+          var accessToken =
+            "vk1.a.xDq1ozkVxSYencYxdBEBpkrjF7Wja7DpPclNhV2R66a_P4wA5GigbpU2geOZQqUF2yD1dZQUGRnHh1dzCJv1pKsC6ZiM0CvvqI1fvjEonsF9p3jpcsyDjJh7FiEpw-EKUGzd4urVsTIIsaGY21fTqgqq0tmqS83kOnmbm_fnGC4gz5s9vLbe60hqLQKo4GfZohGvbxYqKRwkOCFEnsNjpg";
+          var version = "5.131";
+
+          var requestUrl =
+            apiUrl +
+            "?group_id=" +
+            groupId +
+            "&fields=members_count&access_token=" +
+            accessToken +
+            "&v=" +
+            version;
+
+          return $.ajax({
+            url: requestUrl,
+            type: "GET",
+            dataType: "jsonp",
+          });
+        }
+
+        var groups = [
+          "public200468972",
+          "mo_enem",
+          "yablonovskiy_ra_01",
+          "public_moafipsipskoe",
+          "stb01",
+          "club211880138",
+          "club211804596",
+          "public217215301",
+          "public215294356",
+          "public212424589",
+          "ansambladigi",
+          "club215276093",
+          "club215315552",
+          "muza_dshi",
+          "club211773592",
+          "public216236266",
+          "d_sh_i__tahtamukay",
+          "sysobr",
+          "enembusinesscentr",
+          "public217039608",
+          "public215492368",
+          "public215295972",
+          "club215301640",
+          "club215421755",
+          "club159775574",
+          "public216917849",
+          "club216125670",
+          "club215441597",
+          "club211786360",
+          "af_school4",
+          "mboyscool5",
+          "public212529335",
+          "club214326982",
+          "club215365265",
+          "public217061627",
+          "public212047403",
+          "public212083770",
+          "public215437830",
+          "public202996322",
+          "club211710277",
+          "rdsschool15",
+          "public208629057",
+          "public214268770",
+          "n.a_shool_19",
+          "public215439074",
+          "public216114752",
+          "club202063995",
+          "public215409938",
+          "mbdou_nalmes",
+          "club215439775",
+          "club215394170",
+          "club215313123",
+          "public215301997",
+          "club215441382",
+          "club215315278",
+          "public215364374",
+          "club215367870",
+          "public202996860",
+          "club215382470",
+          "public215369161",
+          "club211636583",
+          "public211863142",
+          "club209013167",
+          "public215371639",
+          "public203626389",
+          "tmt01ru",
+          "public217487250",
+          "public217755822",
+        ];
+
+        var links = [
+          "https://ta01.ru/",
+          "http://amoenem.ru/",
+          "https://www.adm-yabl01.ru/",
+          "https://afipsip01.ru/",
+          "https://stb01.ru/",
+          "https://tasp01.ru/",
+          "https://kozet01.ru/",
+          "https://shendgiy01.ru/",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "https://kultura-taxtamukai.ru/",
+          "http://adigi01.ru/",
+          "https://dmt-ta01.ru/",
+          "https://dk-fakel.ru",
+          "https://muzadshi.ru/",
+          "https://afipsipdshi.ru/",
+          "https://enemdshi.ru/",
+          "http://taxtamukai-dshi.ru/",
+          "http://sysobr.ru/",
+          "https://www.mcpmp.ru/",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "https://ta01.ru/комитет-фк-и-спорта",
+          "http://www.тмцбс.рф/",
+          "https://mbu-tcks01.ru/",
+          "http://sysobr.ru/dopolnitelnoe-obrazovanie/index.php",
+          "http://sysobr.ru/sh1",
+          "http://sysobr.ru/sh2",
+          "http://sysobr.ru/sh3",
+          "http://sysobr.ru/sh4",
+          "http://sysobr.ru/sh5",
+          "http://sysobr.ru/sh6",
+          "http://sysobr.ru/sh7",
+          "http://sysobr.ru/sh8",
+          "http://sysobr.ru/sh9",
+          "http://sysobr.ru/sh10",
+          "http://sysobr.ru/sh11",
+          "http://sysobr.ru/sh12",
+          "http://sysobr.ru/sh13",
+          "http://sysobr.ru/sh14",
+          "http://sysobr.ru/sh15",
+          "http://sysobr.ru/sh16",
+          "http://sysobr.ru/sh17",
+          "http://sysobr.ru/sh19",
+          "http://sysobr.ru/sh20",
+          "http://sysobr.ru/sh24",
+          "http://sysobr.ru/sh25",
+          "http://sysobr.ru/sh27",
+          "http://sysobr.ru/ds1",
+          "http://sysobr.ru/ds2",
+          "http://sysobr.ru/ds3",
+          "http://sysobr.ru/ds4",
+          "http://sysobr.ru/ds5",
+          "http://sysobr.ru/ds6",
+          "http://sysobr.ru/ds7",
+          "http://sysobr.ru/ds8",
+          "http://sysobr.ru/ds9",
+          "http://sysobr.ru/ds10",
+          "http://sysobr.ru/ds11",
+          "http://sysobr.ru/ds12",
+          "http://sysobr.ru/ds13",
+          "http://sysobr.ru/ds14",
+          "http://sysobr.ru/ds15",
+          "http://sysobr.ru/ds16",
+          "https://gazetasoglasie.ru/",
+          "https://tmt01.ru/",
+          "https://sysobr.ru/imts/",
+        ];
+        var ok_groups = [
+          "https://ok.ru/group/65585356013631",
+          "https://ok.ru/group/61447539589213",
+          "https://ok.ru/group/64082898845939",
+          "https://ok.ru/group/62425640075484",
+          "https://ok.ru/group/60209719017685",
+          "https://ok.ru/group/64257968636145",
+          "https://ok.ru/group/61074670813332",
+          "https://ok.ru/group/70000001128266",
+          "https://ok.ru/group/70000000538635",
+          "https://ok.ru/group/63194682491055",
+          "https://ok.ru/group/70000000818293",
+          "https://ok.ru/group/62392503304386",
+          "https://ok.ru/group/70000000422151",
+          "https://ok.ru/group/70000000418973",
+          "https://ok.ru/group/70000000410509",
+          "https://ok.ru/group/70000001303003",
+          "https://ok.ru/group/61076659372175",
+          "https://ok.ru/group/70000000136538",
+          "https://ok.ru/group/70000000757382",
+          "https://ok.ru/group/70000001063557",
+          "https://ok.ru/group/70000000537999",
+          "https://ok.ru/group/70000000359259",
+          "https://ok.ru/group/70000000500870",
+          "https://ok.ru/group/70000000473298",
+          "https://ok.ru/group/53953780711585",
+          "https://ok.ru/group/70000000738405",
+          "https://ok.ru/group/70000000776051",
+          "https://ok.ru/group/70000000440016",
+          "https://ok.ru/group/70000001185248",
+          "https://ok.ru/group/70000000496699",
+          "https://ok.ru/group/70000000811445",
+          "https://ok.ru/group/70000000410307",
+          "https://ok.ru/group/70000000409283",
+          "https://ok.ru/group/70000000457750",
+          "https://ok.ru/group/70000000434580",
+          "https://ok.ru/group/70000000442163",
+          "https://ok.ru/group/70000000133221",
+          "https://ok.ru/group/61086541349006",
+          "https://ok.ru/group/70000000461971",
+          "https://ok.ru/group/60219072774357",
+          "https://ok.ru/group/70000000438733",
+          "https://ok.ru/group/70000000458830",
+          "https://ok.ru/group/62091761680498",
+          "https://ok.ru/group/70000000123655",
+          "https://ok.ru/group/70000000409247",
+          "https://ok.ru/group/70000000457367",
+          "https://ok.ru/group/70000000422531",
+          "https://ok.ru/group/70000000512998",
+          "https://ok.ru/group/70000000419229",
+          "https://ok.ru/group/70000000396473",
+          "https://ok.ru/group/70000000425853",
+          "https://ok.ru/group/70000000435688",
+          "https://ok.ru/group/70000000417164",
+          "https://ok.ru/group/70000000436100",
+          "https://ok.ru/group/70000000444493",
+          "https://ok.ru/group/70000000462961",
+          "https://ok.ru/group/70000000431528",
+          "https://ok.ru/group/70000000391240",
+          "https://ok.ru/group/70000000488052",
+          "https://ok.ru/group/70000000460726",
+          "https://ok.ru/group/70000000414690",
+          "https://ok.ru/group/70000000391156",
+          "https://ok.ru/group/68698755039291",
+          "https://ok.ru/group/70000000452245",
+          "https://ok.ru/group/60510021550293",
+          "https://ok.ru/group/64268378964208",
+          "https://ok.ru/group/70000001213030",
+          "https://ok.ru/group/70000001316025",
+        ];
+        var tableBody = $("#groupTable tbody");
+
+        function processGroups(index) {
+          if (index >= groups.length) {
+            return;
+          }
+          if (index >= links.length) {
+            return;
+          }
+          if (index >= ok_groups.length) {
+            return;
+          }
+
+          var link = links[index];
+          var ok_gr = ok_groups[index];
+          var groupId = groups[index];
+          var row = $("<tr class='row_block'>");
+
+          getGroupInfo(groupId)
+            .done(function (response) {
+              var group = response.response[0];
+              if (group) {
+                var groupIdCell = $("<td class='group_id'>").append(
+                  $("<a>")
+                    .attr("href", `https://vk.com/${group.screen_name}`)
+                    .attr("target", "_blank") // Открываем в новом окне
+                    .text(`https://vk.com/${group.screen_name}`)
+                );
+                var groupNameCell = $("<td>").text();
+                var linkCell = $("<td class='site_link'>").append(
+                  $("<a>")
+                    .attr("href", link)
+                    .attr("target", "_blank") // Открываем в новом окне
+                    .text(link)
+                );
+                var ok_grCell = $("<td class='site_link'>").append(
+                  $("<a>")
+                    .attr("href", ok_gr)
+                    .attr("target", "_blank") // Открываем в новом окне
+                    .text(ok_gr)
+                );
+                var count_num = $("<td class='count_number'>").text(
+                  count_number++
+                );
+                var membersCountCell = $("<td class='count'>").text(
+                  group.members_count
+                );
+
+                row.append(
+                  count_num,
+                  linkCell,
+                  groupIdCell,
+                  groupNameCell,
+                  membersCountCell,
+                  ok_grCell
+                );
+              } else {
+                row.html('<td colspan="3">Группа не найдена.</td>');
+              }
+            })
+            .fail(function (error) {
+              row.html('<td colspan="3">Ошибка при получение данных.</td>');
+            })
+            .always(function () {
+              tableBody.append(row);
+
+              setTimeout(function () {
+                processGroups(index + 1);
+              }, 200);
+            });
+        }
+
+        function processLinks(index) {
+          setTimeout(function () {
+            processLinks(index + 1);
+          }, 0);
+        }
+
+        processGroups(0);
+        processLinks(0);
+      });
+    </script>
+  </body>
+</html>
+
+<!-- var groups = [
+"public200468972",
+"mo_enem",
+"yablonovskiy_ra_01",
+"public_moafipsipskoe",
+"stb01",
+"club211880138",
+"club211804596",
+"public217215301",
+"public215294356",
+"public212424589",
+"ansambladigi",
+"club215276093",
+"club215315552",
+"muza_dshi",
+"club211773592",
+"public216236266",
+"d_sh_i__tahtamukay",
+"sysobr",
+"enembusinesscentr",
+"public217039608",
+"public215492368",
+"public215295972",
+"club215301640",
+"club215421755",
+"club159775574",
+"public216917849",
+"club216125670",
+"club215441597",
+"club211786360",
+"af_school4",
+"mboyscool5",
+"public212529335",
+"club214326982",
+"club215365265",
+"public217061627",
+"public212047403",
+"public212083770",
+"public215437830",
+"public202996322",
+"club211710277",
+"rdsschool15",
+"public208629057",
+"public214268770",
+"n.a_shool_19",
+"public215439074",
+"public216114752",
+"club202063995",
+"public215409938",
+"mbdou_nalmes",
+"club215439775",
+"club215394170",
+"club215313123",
+"public215301997",
+"club215441382",
+"club215315278",
+"public215364374",
+"club215367870",
+"public202996860",
+"club215382470",
+"public215369161",
+"club211636583",
+"public211863142",
+"club209013167",
+"public215371639",
+"public203626389",
+"tmt01ru",
+"public217487250",
+"public217755822",
+];
+
+var links = [
+"https://ta01.ru/",
+"http://amoenem.ru/",
+"https://www.adm-yabl01.ru/",
+"https://afipsip01.ru/",
+"https://stb01.ru/",
+"https://tasp01.ru/",
+"https://kozet01.ru/",
+"https://shendgiy01.ru/",
+"https://ta01.ru/комитет-фк-и-спорта",
+"https://checklink.mail.ru/proxy?es=vVu3DRLXUovEC0Z8zu8TfnDE88nQHQzL9J5WPh4erI4%3D&egid=tC3sMwla7jl9saQn5cqXs5ZCKk8iWdcrmA7XlblDwKY%3D&url=https%3A%2F%2Fclick.mail.ru%2Fredir%3Fu%3Dhttps%253A%252F%252Fkultura-taxtamukai.ru%252F%26c%3Dswm%26r%3Dhttp%26o%3Dmail%26v%3D3%26s%3Ddb18c54c551797bd&uidl=16601371450853693168&from=s-zhenet01%40bk.ru&to=s-zhenet01%40bk.ru&email=s-zhenet01%40bk.ru",
+"http://adigi01.ru/",
+"https://dmt-ta01.ru/",
+"dk-fakel.ru",
+"https://muzadshi.ru/",
+"https://afipsipdshi.ru/",
+"https://enemdshi.ru/",
+"http://taxtamukai-dshi.ru/",
+"http://sysobr.ru/",
+"https://www.mcpmp.ru/",
+"https://ta01.ru/%D0%BC%D0%B1%D1%83-%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D1%84%D0%B8%D0%B7%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80",
+"https://ta01.ru/комитет-фк-и-спорта",
+"https://ta01.ru/комитет-фк-и-спорта",
+"https://ta01.ru/комитет-фк-и-спорта",
+"https://ta01.ru/комитет-фк-и-спорта",
+"http://www.тмцбс.рф/",
+"https://mbu-tcks01.ru/",
+"http://sysobr.ru/dopolnitelnoe-obrazovanie/index.php",
+"http://sysobr.ru/sh1",
+"http://sysobr.ru/sh2",
+"http://sysobr.ru/sh3",
+"http://sysobr.ru/sh4",
+"http://sysobr.ru/sh5",
+"http://sysobr.ru/sh6",
+"http://sysobr.ru/sh7",
+"http://sysobr.ru/sh8",
+"http://sysobr.ru/sh9",
+"http://sysobr.ru/sh10",
+"http://sysobr.ru/sh11",
+"http://sysobr.ru/sh12",
+"http://sysobr.ru/sh13",
+"http://sysobr.ru/sh14",
+"http://sysobr.ru/sh15",
+"http://sysobr.ru/sh16",
+"http://sysobr.ru/sh17",
+"http://sysobr.ru/sh19",
+"http://sysobr.ru/sh20",
+"http://sysobr.ru/sh24",
+"http://sysobr.ru/sh25",
+"http://sysobr.ru/sh27",
+"http://sysobr.ru/ds1",
+"http://sysobr.ru/ds2",
+"http://sysobr.ru/ds3",
+"http://sysobr.ru/ds4",
+"http://sysobr.ru/ds5",
+"http://sysobr.ru/ds6",
+"http://sysobr.ru/ds7",
+"http://sysobr.ru/ds8",
+"http://sysobr.ru/ds9",
+"http://sysobr.ru/ds10",
+"http://sysobr.ru/ds11",
+"http://sysobr.ru/ds12",
+"http://sysobr.ru/ds13",
+"http://sysobr.ru/ds14",
+"http://sysobr.ru/ds15",
+"http://sysobr.ru/ds16",
+"https://gazetasoglasie.ru/",
+"https://tmt01.ru/",
+"https://sysobr.ru/imts/",
+]; -->

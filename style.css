@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+.page_wrapper {
+  width: 96%;
+  margin: 0 auto;
+}
+.page_title h1 {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.count {
+  text-align: center;
+}
+.row_block {
+  width: 100%;
+}
+.row_block td {
+  font-size: 12px;
+  border-bottom: 1px solid #000;
+  padding: 10px 0 !important;
+ 
+}
+
+.page_content th {
+  font-size: 15px;
+  
+}
+.group_id {
+  width: 250px !important;
+}
+.count {
+  width: 100px !important;
+}
+.site_link {
+  width: 250px !important;
+}
