@@ -14,8 +14,14 @@
   text-align: center;
   margin: 30px 0 60px 0;
 }
+.sum {
+  width: 150px;
+}
 
-.count {
+.count,
+.sum,
+.bottom_count,
+.error {
   text-align: center;
 }
 .row_block {
@@ -25,12 +31,10 @@
   font-size: 12px;
   border-bottom: 1px solid #000;
   padding: 10px 0 !important;
- 
 }
 
 .page_content th {
   font-size: 15px;
-  
 }
 .group_id {
   width: 250px !important;

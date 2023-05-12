@@ -381,15 +381,18 @@
         var vk_gr_sum = 0;
         var ok_gr_sum = 0;
         var tg_ch_sum = 0;
+        var total_sum = 0;
         function processGroups(index) {
           if (index >= groups.length) {
             tableBody.append(
-              '<tr class="row_block"><td colspan="3">Общая сумма</td><td class="count">' +
+              '<tr class="row_block"><td colspan="3">Общая сумма</td><td class="bottom_count">' +
                 vk_gr_sum +
-                '</td><td></td><td class="count">' +
+                '</td><td></td><td class="bottom_count">' +
                 ok_gr_sum +
-                '</td><td></td><td class="count">' +
+                '</td><td></td><td class="bottom_count">' +
                 tg_ch_sum +
+                '</td><td class="bottom_count">' +
+                total_sum +
                 "</td></tr>"
             );
             return;
@@ -400,7 +403,7 @@
           var groupIdOk = ok_groups[index];
           var tg_chanel = tg_chanels[index];
           var row = $("<tr class='row_block'>");
-            var sumCell = $("<td class='sum'>");
+          var sumCell = $("<td class='sum'>");
           getGroupInfoVk(groupIdVk)
             .done(function (response) {
               var group = response.response[0];
@@ -459,7 +462,7 @@
                       row.append(okMembersCountCell, tg_chanels);
                     } else {
                       row.append(
-                        '<td class="count">Группа не найдена.</td>',
+                        '<td class="error">Группа не найдена.</td>',
                         tg_chanels
                       );
                     }
@@ -469,18 +472,33 @@
                         tg_ch_sum += telegramMembersCount;
                         var telegramMembersCountCell =
                           $("<td class='count'>").text(telegramMembersCount);
-                     
+                        var sum = 0;
 
+                        setTimeout(function () {
+                          row.find(".count").each(function () {
+                            var value = $(this).text();
+                            value = parseInt(value, 10);
+                            sum += value;
+                          });
+                          total_sum += sum;
+                          sumCell.text(sum);
+                        }, 100);
                         row.append(telegramMembersCountCell, sumCell);
                       })
                       .fail(function () {
-                        row.append('<td class="count">Ошибка.</td>');
+                        var sum = 0;
+                        row.find(".count").each(function () {
+                          var value = $(this).text().trim();
+                          value = parseInt(value, 10);
+                          sum += value;
+                        });
+                        total_sum += sum;
+                        sumCell.text(sum);
+                        row.append('<td class="error">Ошибка.</td>', sumCell);
                       });
                   })
                   .fail(function () {
-                    row.append(
-                      '<td class="ok_count">Ошибка при получение данных.</td>'
-                    );
+                    row.append('<td class="error">Ошибка.</td>');
                   });
                 $("#myTable").append(
                   '<tr><td colspan="4">Общая сумма</td><td>' +
@@ -488,7 +506,7 @@
                     "</td><td></td></tr>"
                 );
               } else {
-                row.html('<td colspan="4">Группа не найдена.</td>');
+                row.html('<td colspan="4"></td>');
               }
             })
             .fail(function (error) {
@@ -497,12 +515,6 @@
             .always(function () {
               tableBody.append(row);
               setTimeout(function () {
-                var sum = 0;
-                row.find(".count").each(function () {
-                  sum += parseInt($(this).text(), 10);
-                });
-
-                sumCell.text(sum);
                 processGroups(index + 1);
               }, 200);
             });
