@@ -29,6 +29,9 @@
               <th>Подписчики VK</th>
               <th>Одноклассники</th>
               <th>Участники ОK</th>
+              <th>Телеграм-канал</th>
+              <th>Подписчики TG</th>
+              <th>Общая сумма</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -76,7 +79,17 @@
             dataType: "json",
           });
         }
+        function getChatMembersCountTelegram(chatId) {
+          const baseUrl =
+            "https://api.telegram.org/bot6260014351:AAEJkiNQ1tsJsYZscPXw3uvjJzsW6lrasjg/getChatMembersCount";
+          const url = `${baseUrl}?chat_id=@${chatId}`;
 
+          return $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+          });
+        }
         var groups = [
           "public200468972",
           "mo_enem",
@@ -106,6 +119,7 @@
           "public216917849",
           "club216125670",
           "club215441597",
+          "public216945157",
           "club211786360",
           "af_school4",
           "mboyscool5",
@@ -217,6 +231,7 @@
           "https://gazetasoglasie.ru/",
           "https://tmt01.ru/",
           "https://sysobr.ru/imts/",
+          "",
         ];
         var ok_groups = [
           "65585356013631",
@@ -266,6 +281,7 @@
           "70000000409247",
           "70000000457367",
           "70000000422531",
+          "",
           "70000000512998",
           "70000000419229",
           "70000000396473",
@@ -289,21 +305,106 @@
           "70000001316025",
         ];
 
-        var tableBody = $("#groupTable tbody");
+        var tg_chanels = [
+          "tahtamukay",
+          "enem_admin",
+          "yablonovskiy_ra_01",
+          "mo_afipsipskoe",
+          "starobzhegokay_admin",
+          "takhtamukay_news",
+          "moikozet",
+          "shendjiy",
+          "sport_ta01",
+          "culture_takhtamukai",
+          "aata01ta",
+          "dmteatr",
+          "culturasportyablonovskiy",
+          "muza_dshi",
+          "afipsip_dshi1981",
+          "enemdshi",
+          "taxtamukaidshi",
+          "sysobr_ru",
+          "BusinessCentrenem",
+          "mfok_nart",
+          "sportsshkola1_tahtamukay",
+          "sport_enem",
+          "sportschoolyab",
+          "",
+          "tahtamukaiskiebiblioteki",
+          "mbu_tcks",
+          "cdoddthr",
+          "school_1_takhtamukai",
+          "",
+          "school3yablonov",
+          "school4_afipsip",
+          "mboyshN5",
+          "school6_enem",
+          "scola7panahes",
+          "skola_8pseituk",
+          "sosch_9_otradny",
+          "kozet10",
+          "thrN11",
+          "school_12_official",
+          "mbousch13novyi",
+          "mbou_sh14",
+          "sch15yablonovskiy",
+          "osch16",
+          "school17_enem",
+          "school_19_n_adyg",
+          "school20novsad",
+          "school24shengij",
+          "sh25enem",
+          "school27nov_adyg",
+          "nalmes01",
+          "malyshook",
+          "mbdou3daxabn",
+          "nasyp4",
+          "mbdou5kalinka",
+          "mbdou6ivushka1",
+          "krasnayashapochka7",
+          "skazka8mbdou",
+          "mbdoy09teremok",
+          "Rucheek_10",
+          "dumovochka11",
+          "mbdoy_12",
+          "mbdou_13_vishenka",
+          "sunshaine14",
+          "mbdou15_nebzuy",
+          "mbdou16nafset",
+          "gazeta_soglasie",
+          "tmt01ru",
+          "mkuimc",
+          "kultura_enem",
+        ];
 
+        var tableBody = $("#groupTable tbody");
+        var vk_gr_sum = 0;
+        var ok_gr_sum = 0;
+        var tg_ch_sum = 0;
         function processGroups(index) {
           if (index >= groups.length) {
+            tableBody.append(
+              '<tr class="row_block"><td colspan="3">Общая сумма</td><td class="count">' +
+                vk_gr_sum +
+                '</td><td></td><td class="count">' +
+                ok_gr_sum +
+                '</td><td></td><td class="count">' +
+                tg_ch_sum +
+                "</td></tr>"
+            );
             return;
           }
 
           var groupIdVk = groups[index];
           var linksId = links[index];
           var groupIdOk = ok_groups[index];
+          var tg_chanel = tg_chanels[index];
           var row = $("<tr class='row_block'>");
-
+            var sumCell = $("<td class='sum'>");
           getGroupInfoVk(groupIdVk)
             .done(function (response) {
               var group = response.response[0];
+
               if (group) {
                 var groupIdCell = $("<td class='group_id'>").append(
                   $("<a>")
@@ -330,13 +431,13 @@
                 var membersCountCell = $("<td class='count'>").text(
                   group.members_count
                 );
+                vk_gr_sum += group.members_count;
 
                 row.append(
                   count_num,
                   linkCell,
                   groupIdCell,
                   groupNameCell,
-
                   membersCountCell,
                   ok_grCell
                 );
@@ -344,22 +445,48 @@
                 getGroupInfoOk(groupIdOk)
                   .done(function (response) {
                     var okGroup = response[0];
+                    var tg_chanels = $("<td class='site_link'>").append(
+                      $("<a>")
+                        .attr("href", `https://t.me/${tg_chanel}`)
+                        .attr("target", "_blank")
+                        .text(`https://t.me/${tg_chanel}`)
+                    );
                     if (okGroup) {
                       var okMembersCountCell = $("<td class='count'>").text(
                         okGroup.members_count
                       );
-                      row.append(okMembersCountCell);
+                      ok_gr_sum += okGroup.members_count;
+                      row.append(okMembersCountCell, tg_chanels);
                     } else {
                       row.append(
-                        '<td class="ok_count">Группа не найдена.</td>'
+                        '<td class="count">Группа не найдена.</td>',
+                        tg_chanels
                       );
                     }
+                    getChatMembersCountTelegram(tg_chanel)
+                      .done(function (telegramResponse) {
+                        var telegramMembersCount = telegramResponse.result; // Получаем количество участников чата в Telegram
+                        tg_ch_sum += telegramMembersCount;
+                        var telegramMembersCountCell =
+                          $("<td class='count'>").text(telegramMembersCount);
+                     
+
+                        row.append(telegramMembersCountCell, sumCell);
+                      })
+                      .fail(function () {
+                        row.append('<td class="count">Ошибка.</td>');
+                      });
                   })
                   .fail(function () {
                     row.append(
                       '<td class="ok_count">Ошибка при получение данных.</td>'
                     );
                   });
+                $("#myTable").append(
+                  '<tr><td colspan="4">Общая сумма</td><td>' +
+                    vk_gr_sum +
+                    "</td><td></td></tr>"
+                );
               } else {
                 row.html('<td colspan="4">Группа не найдена.</td>');
               }
@@ -370,6 +497,12 @@
             .always(function () {
               tableBody.append(row);
               setTimeout(function () {
+                var sum = 0;
+                row.find(".count").each(function () {
+                  sum += parseInt($(this).text(), 10);
+                });
+
+                sumCell.text(sum);
                 processGroups(index + 1);
               }, 200);
             });
