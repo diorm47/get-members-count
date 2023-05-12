@@ -1,45 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Вывод число подписчиков у групп.</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="page_wrapper">
-      <div class="page_title">
-        <h1>Информация о группах</h1>
-      </div>
-      <div class="page_content">
-        <table id="groupTable">
-          <thead>
-            <tr>
-              <th>N</th>
-              <th>Сайт</th>
-              <th>ВКонтакте</th>
-              <th>Подписчики VK</th>
-              <th>Одноклассники</th>
-              <th>Участники ОK</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
+
     <script>
       $(document).ready(function () {
         var count_number = 1;
-
-        function getGroupInfoVk(groupId) {
+        function getGroupInfo(groupId) {
           var apiUrl = "https://api.vk.com/method/groups.getById";
           var accessToken =
             "vk1.a.xDq1ozkVxSYencYxdBEBpkrjF7Wja7DpPclNhV2R66a_P4wA5GigbpU2geOZQqUF2yD1dZQUGRnHh1dzCJv1pKsC6ZiM0CvvqI1fvjEonsF9p3jpcsyDjJh7FiEpw-EKUGzd4urVsTIIsaGY21fTqgqq0tmqS83kOnmbm_fnGC4gz5s9vLbe60hqLQKo4GfZohGvbxYqKRwkOCFEnsNjpg";
@@ -58,22 +21,6 @@
             url: requestUrl,
             type: "GET",
             dataType: "jsonp",
-          });
-        }
-
-        function getGroupInfoOk(uid) {
-          const fields = "members_count";
-          const baseUrl = "https://api.ok.ru/fb.do";
-          const applicationKey = "CENQJGLGDIHBABABA";
-          const sig = "747f36a9ce1daeffd76d925cc4b03a73";
-          const accessToken =
-            "tkn1s0H0uYMTtJgzvVcQkQ3NbyoS9QRueaWHZp9PuvVNrJWZOttedH2nv2ysCfBK1yow73";
-          const url = `${baseUrl}?application_key=${applicationKey}&format=json&method=group.getInfo&uids=${uid}&fields=${fields}&sig=${sig}&access_token=${accessToken}`;
-
-          return $.ajax({
-            url: url,
-            method: "GET",
-            dataType: "json",
           });
         }
 
@@ -288,20 +235,27 @@
           "70000001213030",
           "70000001316025",
         ];
-
+   
+   
         var tableBody = $("#groupTable tbody");
 
         function processGroups(index) {
           if (index >= groups.length) {
             return;
           }
+          if (index >= links.length) {
+            return;
+          }
+          if (index >= ok_groups.length) {
+            return;
+          }
 
-          var groupIdVk = groups[index];
-          var linksId = links[index];
-          var groupIdOk = ok_groups[index];
+          var link = links[index];
+          var ok_gr = ok_groups[index];
+          var groupId = groups[index];
           var row = $("<tr class='row_block'>");
 
-          getGroupInfoVk(groupIdVk)
+          getGroupInfo(groupId)
             .done(function (response) {
               var group = response.response[0];
               if (group) {
@@ -311,19 +265,19 @@
                     .attr("target", "_blank") // Открываем в новом окне
                     .text(`https://vk.com/${group.screen_name}`)
                 );
-                var ok_grCell = $("<td class='site_link'>").append(
-                  $("<a >")
-                    .attr("href", `https://ok.ru/group/${groupIdOk}`)
-                    .attr("target", "_blank") // Открываем в новом окне
-                    .text(`https://ok.ru/group/${groupIdOk}`)
-                );
+                var groupNameCell = $("<td>").text();
                 var linkCell = $("<td class='site_link'>").append(
                   $("<a>")
-                    .attr("href", linksId)
+                    .attr("href", link)
                     .attr("target", "_blank") // Открываем в новом окне
-                    .text(linksId)
+                    .text(link)
                 );
-                var groupNameCell = $("<td>").text();
+                var ok_grCell = $("<td class='site_link'>").append(
+                  $("<a >")
+                    .attr("href", `https://ok.ru/group/${ok_gr}`)
+                    .attr("target", "_blank") // Открываем в новом окне
+                    .text(`https://ok.ru/group/${ok_gr}`)
+                );
                 var count_num = $("<td class='count_number'>").text(
                   count_number++
                 );
@@ -336,47 +290,32 @@
                   linkCell,
                   groupIdCell,
                   groupNameCell,
-
                   membersCountCell,
                   ok_grCell
                 );
-
-                getGroupInfoOk(groupIdOk)
-                  .done(function (response) {
-                    var okGroup = response[0];
-                    if (okGroup) {
-                      var okMembersCountCell = $("<td class='count'>").text(
-                        okGroup.members_count
-                      );
-                      row.append(okMembersCountCell);
-                    } else {
-                      row.append(
-                        '<td class="ok_count">Группа не найдена.</td>'
-                      );
-                    }
-                  })
-                  .fail(function () {
-                    row.append(
-                      '<td class="ok_count">Ошибка при получение данных.</td>'
-                    );
-                  });
               } else {
-                row.html('<td colspan="4">Группа не найдена.</td>');
+                row.html('<td colspan="3">Группа не найдена.</td>');
               }
             })
             .fail(function (error) {
-              row.html('<td colspan="4">Ошибка при получение данных.</td>');
+              row.html('<td colspan="3">Ошибка при получение данных.</td>');
             })
             .always(function () {
               tableBody.append(row);
+
               setTimeout(function () {
                 processGroups(index + 1);
               }, 200);
             });
         }
 
+        function processLinks(index) {
+          setTimeout(function () {
+            processLinks(index + 1);
+          }, 0);
+        }
+
         processGroups(0);
+        processLinks(0);
       });
     </script>
-  </body>
-</html>
