@@ -6,9 +6,10 @@
 }
 
 .page_wrapper {
-  width: 96%;
+  width: 1900px;
   margin: 0 auto;
   margin-bottom: 40px;
+  padding: 0 30px;
 }
 .page_title h1 {
   text-align: center;
@@ -17,11 +18,14 @@
 .sum {
   width: 150px;
 }
-
+.ta_canter {
+  width: 180px !important;
+}
 .count,
 .sum,
 .bottom_count,
-.error {
+.error,
+.ta_canter {
   text-align: center;
 }
 .row_block {
